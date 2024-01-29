@@ -1,4 +1,4 @@
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '.',
@@ -6,24 +6,20 @@ module.exports = function(config) {
     frameworks: ['jasmine', 'browserify'],
 
     // list of files / patterns to load in the browser
-    files: [
-      'node_modules/angular/angular.js',
-      'ngReact.js',
-      'tests/*.js'
-    ],
+    files: ['node_modules/angular/angular.js', 'ngReact.js', 'tests/*.js'],
 
     preprocessors: {
-      'tests/*.js': ['browserify']
+      'tests/*.js': ['browserify'],
     },
 
     browserify: {
       debug: true,
-      transform: [['reactify', {'es6': true}], 'browserify-shim'],
-      extensions: ['.js']
+      transform: [['reactify', { es6: true }], 'browserify-shim'],
+      extensions: ['.js'],
     },
 
     // list of files to exclude
-    exclude: [ ],
+    exclude: [],
 
     // use dots reporter, as travis terminal does not support escaping sequences
     // possible values: 'dots', 'progress'
@@ -35,34 +31,25 @@ module.exports = function(config) {
     port: 9876,
 
     // cli runner port
-    runnerPort : 9100,
+    runnerPort: 9100,
 
     // enable / disable colors in the output (reporters and logs)
     // CLI --colors --no-colors
     colors: true,
-
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    // CLI --log-level debug
     logLevel: config.LOG_INFO,
-
-    // enable / disable watching file and executing tests whenever any file changes
-    // CLI --auto-watch --no-auto-watch
     autoWatch: true,
 
-    // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera
-    // - Safari (only Mac)
-    // - PhantomJS
-    // - IE (only Windows)
-    // CLI --browsers Chrome,Firefox,Safari
-    browsers: ['PhantomJS'],
+    // Updated browsers list to use ChromeHeadless
+    browsers: ['ChromeHeadless'],
 
-    // If browser does not capture in given timeout [ms], kill it
-    // CLI --capture-timeout 5000
+    // ChromeHeadless configuration for CI environments
+    customLaunchers: {
+      ChromeHeadlessCI: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-gpu'],
+      },
+    },
+
     captureTimeout: 20000,
 
     // Auto run tests on start (when browsers are captured) and exit
@@ -73,10 +60,11 @@ module.exports = function(config) {
     // CLI --report-slower-than 500
     reportSlowerThan: 500,
 
+    // Updated plugins list to include karma-chrome-launcher
     plugins: [
       'karma-jasmine',
-      'karma-phantomjs-launcher',
-      'karma-browserify'
-    ]
+      'karma-chrome-launcher', // Added Chrome launcher
+      'karma-browserify',
+    ],
   });
 };

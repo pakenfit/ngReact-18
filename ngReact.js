@@ -5,26 +5,33 @@
 // - reactComponent (generic directive for delegating off to React Components)
 // - reactDirective (factory for creating specific directives that correspond to reactComponent directives)
 
-
 (function (root, factory) {
   if (typeof module !== 'undefined' && module.exports) {
     // CommonJS
-    module.exports = factory(require('react'), require('react-dom'), require('angular'));
+    module.exports = factory(
+      require('react'),
+      require('react-dom/client'),
+      require('angular')
+    );
   } else if (typeof define === 'function' && define.amd) {
     // AMD
-    define(['react', 'react-dom', 'angular'], function (react, reactDOM, angular) {
-      return (root.ngReact = factory(react, reactDOM, angular));
+    define(['react', 'react-dom/client', 'angular'], function (
+      react,
+      reactDOMClient,
+      angular
+    ) {
+      return (root.ngReact = factory(react, reactDOMClient, angular));
     });
   } else {
     // Global Variables
-    root.ngReact = factory(root.React, root.ReactDOM, root.angular);
+    root.ngReact = factory(root.React, root.reactDOMClient, root.angular);
   }
-}(this, function ngReact(React, ReactDOM, angular) {
+})(this, function ngReact(React, reactDOMClient, angular) {
   'use strict';
 
   // get a react component from name (components can be an angular injectable e.g. value, factory or
   // available on window
-  function getReactComponent( name, $injector ) {
+  function getReactComponent(name, $injector) {
     // if name is a function assume it is component and return it
     if (angular.isFunction(name)) {
       return name;
@@ -39,14 +46,14 @@
     var reactComponent;
     try {
       reactComponent = $injector.get(name);
-    } catch(e) { }
+    } catch (e) {}
 
     if (!reactComponent) {
       try {
-        reactComponent = name.split('.').reduce(function(current, namePart) {
+        reactComponent = name.split('.').reduce(function (current, namePart) {
           return current[namePart];
         }, window);
-      } catch (e) { }
+      } catch (e) {}
     }
 
     if (!reactComponent) {
@@ -61,14 +68,14 @@
     if (fn.wrappedInApply) {
       return fn;
     }
-    var wrapped = function() {
+    var wrapped = function () {
       var args = arguments;
       var phase = scope.$root.$$phase;
-      if (phase === "$apply" || phase === "$digest") {
+      if (phase === '$apply' || phase === '$digest') {
         return fn.apply(null, args);
       } else {
-        return scope.$apply(function() {
-          return fn.apply( null, args );
+        return scope.$apply(function () {
+          return fn.apply(null, args);
         });
       }
     };
@@ -89,7 +96,7 @@
    * @returns {Object} props with the functions wrapped in scope.$apply
    */
   function applyFunctions(obj, scope, propsConfig) {
-    return Object.keys(obj || {}).reduce(function(prev, key) {
+    return Object.keys(obj || {}).reduce(function (prev, key) {
       var value = obj[key];
       var config = (propsConfig || {})[key] || {};
       /**
@@ -97,9 +104,10 @@
        * ensures that when function is called from a React component
        * the Angular digest cycle is run
        */
-      prev[key] = angular.isFunction(value) && config.wrapApply !== false
-        ? applied(value, scope)
-        : value;
+      prev[key] =
+        angular.isFunction(value) && config.wrapApply !== false
+          ? applied(value, scope)
+          : value;
 
       return prev;
     }, {});
@@ -113,12 +121,12 @@
    * Uses the watchDepth attribute to determine how to watch props on scope.
    * If watchDepth attribute is NOT reference or collection, watchDepth defaults to deep watching by value
    */
-  function watchProps (watchDepth, scope, watchExpressions, listener){
+  function watchProps(watchDepth, scope, watchExpressions, listener) {
     var supportsWatchCollection = angular.isFunction(scope.$watchCollection);
     var supportsWatchGroup = angular.isFunction(scope.$watchGroup);
 
     var watchGroupExpressions = [];
-    watchExpressions.forEach(function(expr){
+    watchExpressions.forEach(function (expr) {
       var actualExpr = getPropExpression(expr);
       var exprWatchDepth = getPropWatchDepth(watchDepth, expr);
 
@@ -127,7 +135,7 @@
       } else if (exprWatchDepth === 'reference' && supportsWatchGroup) {
         watchGroupExpressions.push(actualExpr);
       } else {
-        scope.$watch(actualExpr, listener, (exprWatchDepth !== 'reference'));
+        scope.$watch(actualExpr, listener, exprWatchDepth !== 'reference');
       }
     });
 
@@ -137,25 +145,25 @@
   }
 
   // render React component, with scope[attrs.props] being passed in as the component props
-  function renderComponent(component, props, scope, elem) {
-    scope.$evalAsync(function() {
-      ReactDOM.render(React.createElement(component, props), elem[0]);
+  function renderComponent(scope, reactElement, rootElement) {
+    scope.$evalAsync(function () {
+      rootElement.render(reactElement);
     });
   }
 
   // get prop name from prop (string or array)
   function getPropName(prop) {
-    return (Array.isArray(prop)) ? prop[0] : prop;
+    return Array.isArray(prop) ? prop[0] : prop;
   }
 
   // get prop name from prop (string or array)
   function getPropConfig(prop) {
-    return (Array.isArray(prop)) ? prop[1] : {};
+    return Array.isArray(prop) ? prop[1] : {};
   }
 
   // get prop expression from prop (string or array)
   function getPropExpression(prop) {
-    return (Array.isArray(prop)) ? prop[0] : prop;
+    return Array.isArray(prop) ? prop[0] : prop;
   }
 
   // find the normalized attribute knowing that React props accept any type of capitalization
@@ -168,11 +176,8 @@
 
   // get watch depth of prop (string or array)
   function getPropWatchDepth(defaultWatch, prop) {
-    var customWatchDepth = (
-      Array.isArray(prop) &&
-      angular.isObject(prop[1]) &&
-      prop[1].watchDepth
-    );
+    var customWatchDepth =
+      Array.isArray(prop) && angular.isObject(prop[1]) && prop[1].watchDepth;
     return customWatchDepth || defaultWatch;
   }
 
@@ -194,36 +199,42 @@
   //         }
   //     }));
   //
-  var reactComponent = function($injector) {
+  var reactComponent = function ($injector) {
     return {
       restrict: 'E',
       replace: true,
-      link: function(scope, elem, attrs) {
+      link: function (scope, elem, attrs) {
         var reactComponent = getReactComponent(attrs.name, $injector);
+        var rootElement = reactDOMClient.createRoot(elem[0]);
 
-        var renderMyComponent = function() {
+        var renderMyComponent = function () {
           var scopeProps = scope.$eval(attrs.props);
           var props = applyFunctions(scopeProps, scope);
-
-          renderComponent(reactComponent, props, scope, elem);
+          var reactElement = React.createElement(reactComponent, props);
+          renderComponent(scope, reactElement, rootElement);
         };
 
         // If there are props, re-render when they change
-        attrs.props ?
-          watchProps(attrs.watchDepth, scope, [attrs.props], renderMyComponent) :
-          renderMyComponent();
+        attrs.props
+          ? watchProps(
+              attrs.watchDepth,
+              scope,
+              [attrs.props],
+              renderMyComponent
+            )
+          : renderMyComponent();
 
         // cleanup when scope is destroyed
-        scope.$on('$destroy', function() {
+        scope.$on('$destroy', function () {
           if (!attrs.onScopeDestroy) {
-            ReactDOM.unmountComponentAtNode(elem[0]);
+            rootElement.unmount();
           } else {
             scope.$eval(attrs.onScopeDestroy, {
-              unmountComponent: ReactDOM.unmountComponentAtNode.bind(this, elem[0])
+              unmountComponent: rootElement.unmount(),
             });
           }
         });
-      }
+      },
     };
   };
 
@@ -253,16 +264,17 @@
   //
   //     <hello name="name"/>
   //
-  var reactDirective = function($injector) {
-    return function(reactComponentName, staticProps, conf, injectableProps) {
+  var reactDirective = function ($injector) {
+    return function (reactComponentName, staticProps, conf, injectableProps) {
       var directive = {
         restrict: 'E',
         replace: true,
-        link: function(scope, elem, attrs) {
+        link: function (scope, elem, attrs) {
           var reactComponent = getReactComponent(reactComponentName, $injector);
-
+          var rootElement = reactDOMClient.createRoot(elem[0]);
           // if props is not defined, fall back to use the React component's propTypes if present
-          var props = staticProps || Object.keys(reactComponent.propTypes || {});
+          var props =
+            staticProps || Object.keys(reactComponent.propTypes || {});
           if (!props.length) {
             var ngAttrNames = [];
             angular.forEach(attrs.$attr, function (value, key) {
@@ -272,48 +284,58 @@
           }
 
           // for each of the properties, get their scope value and set it to scope.props
-          var renderMyComponent = function() {
-            var scopeProps = {}, config = {};
-            props.forEach(function(prop) {
+          var renderMyComponent = function () {
+            var scopeProps = {},
+              config = {};
+            props.forEach(function (prop) {
               var propName = getPropName(prop);
-              scopeProps[propName] = scope.$eval(findAttribute(attrs, propName));
+              scopeProps[propName] = scope.$eval(
+                findAttribute(attrs, propName)
+              );
               config[propName] = getPropConfig(prop);
             });
             scopeProps = applyFunctions(scopeProps, scope, config);
             scopeProps = angular.extend({}, scopeProps, injectableProps);
-            renderComponent(reactComponent, scopeProps, scope, elem);
+            var reactElement = React.createElement(reactComponent, scopeProps);
+            renderComponent(scope, reactElement, rootElement);
           };
 
           // watch each property name and trigger an update whenever something changes,
           // to update scope.props with new values
-          var propExpressions = props.map(function(prop){
-            return (Array.isArray(prop)) ?
-              [attrs[getPropName(prop)], getPropConfig(prop)] :
-              attrs[prop];
+          var propExpressions = props.map(function (prop) {
+            return Array.isArray(prop)
+              ? [attrs[getPropName(prop)], getPropConfig(prop)]
+              : attrs[prop];
           });
 
-          watchProps(attrs.watchDepth, scope, propExpressions, renderMyComponent);
+          watchProps(
+            attrs.watchDepth,
+            scope,
+            propExpressions,
+            renderMyComponent
+          );
 
           renderMyComponent();
 
           // cleanup when scope is destroyed
-          scope.$on('$destroy', function() {
+          scope.$on('$destroy', function () {
             if (!attrs.onScopeDestroy) {
-              ReactDOM.unmountComponentAtNode(elem[0]);
+              rootElement.unmount();
             } else {
               scope.$eval(attrs.onScopeDestroy, {
-                unmountComponent: ReactDOM.unmountComponentAtNode.bind(this, elem[0])
+                unmountComponent: rootElement.unmount(),
               });
             }
           });
-        }
+        },
       };
       return angular.extend(directive, conf);
     };
   };
 
   // create the end module without any dependencies, including reactComponent and reactDirective
-  return angular.module('react', [])
+  return angular
+    .module('react', [])
     .directive('reactComponent', ['$injector', reactComponent])
     .factory('reactDirective', ['$injector', reactDirective]);
-}));
+});
