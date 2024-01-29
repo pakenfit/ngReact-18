@@ -1,59 +1,80 @@
 {
-  "name": "ngreact",
-  "author": "https://github.com/davidchang/ngReact/graphs/contributors",
+  "name": "@pakenfit/ngreact-18",
+  "author": "https://github.com/pakenfit",
   "scripts": {
     "build": "grunt build",
-    "test": "grunt test"
+    "test": "grunt test",
+    "release": "release-it"
   },
-  "version": "0.5.2",
+  "version": "1.0.0",
   "main": "ngReact.js",
-  "description": "Use React Components in Angular",
-  "homepage": "http://davidchang.github.io/ngReact/",
+  "description": "Use React 18 Components in Angular",
+  "homepage": "https://github.com/pakenfit/ngReact-18",
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidchang/ngReact.git"
+    "url": "https://github.com/pakenfit/ngReact-18.git"
   },
   "license": "MIT",
   "peerDependencies": {
     "angular": "< 2.0.0",
-    "react": ">=0.14.2",
-    "react-dom": ">=0.14.2"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "browserify-shim": {
     "angular": "global:angular"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^8.0.1",
     "angular": "1.5.3",
     "angular-mocks": "1.5.3",
     "browserify": "13.0.0",
     "browserify-shim": "3.8.12",
     "es5-shim": "4.5.8",
-    "grunt": "1.0.1",
-    "grunt-cli": "^1.2.0",
-    "grunt-contrib-uglify": "1.0.1",
-    "grunt-contrib-watch": "1.0.0",
-    "grunt-docco": "0.4.0",
-    "grunt-karma": "0.12.2",
-    "jasmine-core": "2.4.1",
-    "karma": "0.13.22",
-    "karma-browserify": "5.0.3",
+    "grunt": "^1.6.1",
+    "grunt-cli": "^1.4.3",
+    "grunt-contrib-uglify": "^5.2.2",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-docco": "^0.5.0",
+    "grunt-karma": "^4.0.2",
+    "jasmine-core": "^5.1.1",
+    "karma": "^6.4.2",
+    "karma-browserify": "^8.1.0",
+    "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "^0.3.6",
-    "karma-phantomjs-launcher": "1.0.0",
-    "load-grunt-tasks": "3.5.0",
+    "load-grunt-tasks": "^5.1.0",
     "phantomjs-prebuilt": "2.1.7",
-    "react": "^15.0.0",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
     "react-addons-test-utils": "^15.0.0",
-    "react-dom": "^15.0.0",
+    "react-dom": "^18.2.0",
     "reactify": "1.1.1",
+    "release-it": "^17.0.3",
     "watchify": "^3.7.0"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=14.0.0"
   },
   "keywords": [
     "angularjs",
     "angular",
     "react",
     "ngReact"
-  ]
+  ],
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular"
+      }
+    }
+  }
 }
