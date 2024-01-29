@@ -2,6 +2,9 @@
 
 > **Note: For a more modern alternative to ngReact, we recommend [react2angular](https://github.com/coatue/react2angular), [angular2react](https://github.com/coatue/angular2react), and [ngimport](https://github.com/bcherny/ngimport).**
 
+
+> **Note: This library is a fork of the original ngReact project, specifically updated to incorporate React 18's new createRoot API. This update facilitates the seamless integration of React 18 components within AngularJS applications, allowing developers to leverage the latest features and performance enhancements offered by React 18. We welcome contributions and feedback from the community to continue improving this project.**
+
 # ngReact
 
 The [React.js](http://facebook.github.io/react/) library can be used as a view component in web applications. ngReact is an Angular module that allows React Components to be used in [AngularJS](https://angularjs.org/) applications.
@@ -18,16 +21,16 @@ Motivation for this could be any of the following:
 
 # Installation
 
-Install via Bower:
+Install via npm:
 
 ```bash
-bower install ngReact
+npm install @pakenfit/ngreact-18
 ```
 
-or via npm:
+or via yarn:
 
 ```bash
-npm install ngreact
+yarn add @pakenfit/ngreact-18
 ```
 
 # Usage
@@ -35,10 +38,10 @@ npm install ngreact
 Then, just make sure Angular, React, and ngReact are on the page,
 
 ```html
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/react/react.js"></script>
-<script src="bower_components/react/react-dom.js"></script>
-<script src="bower_components/ngReact/ngReact.min.js"></script>
+<script src="node_modules/angular/angular.js"></script>
+<script src="node_modules/react/react.js"></script>
+<script src="node_modules/react/react-dom.js"></script>
+<script src="node_modules/@pakenfit/ngreact-18/ngReact.min.js"></script>
 ```
 
 and include the 'react' Angular module as a dependency for your new app
@@ -273,7 +276,7 @@ module: {
 Before starting development run
 
 ```bash
-npm install
+yarn install
 bower install
 ```
 
@@ -337,3 +340,4 @@ Run the examples by starting a webserver in the project root folder.
 - @villesau
 - @bdwain
 - @onumossn
+- @pakenfit

@@ -1,13 +1,13 @@
 {
-  "name": "ngReact",
+  "name": "ngReact-18",
   "author": "https://github.com/davidchang/ngReact/graphs/contributors",
   "version": "0.5.1",
   "main": "ngReact.js",
-  "description": "Use React Components in Angular",
+  "description": "Use React 18 Components in Angular",
   "homepage": "http://davidchang.github.io/ngReact/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidchang/ngReact.git"
+    "url": "https://github.com/pakenfit/ngReact-18.git"
   },
   "license": "MIT",
   "dependencies": {

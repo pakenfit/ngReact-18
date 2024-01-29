@@ -1,44 +1,43 @@
-module.exports = function(grunt) {
-
+module.exports = function (grunt) {
   grunt.initConfig({
-    watch : {
+    watch: {
       files: ['ngReact.js', 'tests/*.js'],
       tasks: ['uglify', 'karma:background:run'],
     },
     uglify: {
-      build : {
+      build: {
         options: {
           mangle: {
-            except: ['angular', 'React']
-          }
+            reserved: ['angular', 'React'],
+          },
         },
         files: {
-          'ngReact.min.js' : 'ngReact.js'
-        }
-      }
+          'ngReact.min.js': 'ngReact.js',
+        },
+      },
     },
     karma: {
       options: {
-        configFile: 'karma.config.js'
+        configFile: 'karma.config.js',
       },
       background: {
         autoWatch: false,
         background: true,
-        singleRun: false
+        singleRun: false,
       },
       single: {
         autoWatch: false,
-        singleRun: true
-      }
+        singleRun: true,
+      },
     },
     docco: {
-      build : {
+      build: {
         src: ['ngReact.js'],
         options: {
-          output: 'docs/'
-        }
-      }
-    }
+          output: 'docs/',
+        },
+      },
+    },
   });
 
   require('load-grunt-tasks')(grunt);

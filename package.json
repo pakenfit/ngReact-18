@@ -1,15 +1,20 @@
 {
   "name": "@pakenfit/ngreact-18",
-  "author": "https://github.com/pakenfit",
+  "author": "https://github.com/davidchang/ngReact/graphs/contributors",
   "scripts": {
     "build": "grunt build",
     "test": "grunt test",
     "release": "release-it"
   },
-  "version": "1.0.0",
+  "version": "1.1.3",
+  "private": false,
   "main": "ngReact.js",
   "description": "Use React 18 Components in Angular",
-  "homepage": "https://github.com/pakenfit/ngReact-18",
+  "homepage": "http://davidchang.github.io/ngReact",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/pakenfit/ngReact-18.git"
