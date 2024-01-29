@@ -11,6 +11,10 @@
   "main": "ngReact.js",
   "description": "Use React 18 Components in Angular",
   "homepage": "http://davidchang.github.io/ngReact",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/pakenfit/ngReact-18.git"
