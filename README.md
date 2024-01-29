@@ -24,13 +24,13 @@ Motivation for this could be any of the following:
 Install via npm:
 
 ```bash
-npm install ngreact-18
+npm install @pakenfit/ngreact-18
 ```
 
 or via yarn:
 
 ```bash
-yarn add ngreact-18
+yarn add @pakenfit/ngreact-18
 ```
 
 # Usage
@@ -41,7 +41,7 @@ Then, just make sure Angular, React, and ngReact are on the page,
 <script src="node_modules/angular/angular.js"></script>
 <script src="node_modules/react/react.js"></script>
 <script src="node_modules/react/react-dom.js"></script>
-<script src="node_modules/ngReact/ngReact.min.js"></script>
+<script src="node_modules/@pakenfit/ngreact-18/ngReact.min.js"></script>
 ```
 
 and include the 'react' Angular module as a dependency for your new app
