@@ -147,7 +147,12 @@
   // render React component, with scope[attrs.props] being passed in as the component props
   function renderComponent(scope, reactElement, rootElement) {
     scope.$evalAsync(function () {
-      rootElement.render(reactElement);
+      const elementWithStrictMode = React.createElement(
+        React.StrictMode,
+        {},
+        reactElement
+      );
+      rootElement.render(elementWithStrictMode);
     });
   }
 
